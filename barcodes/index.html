@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محطة الباركود - احذر قبل المسح!</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #333;
+    }
+    .barcode-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .barcode {
+      border: 2px dashed #aaa;
+      padding: 10px;
+      background-color: white;
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hint {
+      margin-top: 20px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 محطة الباركود: افحص قبل أن تمسح!</h1>
+  <p class="hint">يتم تحديث الرموز تلقائيًا كل 5 دقائق... تحقق من الرابط قبل المسح!</p>
+
+  <div class="barcode-container" id="barcodeContainer">
+    <!-- سيتم توليد الباركودات هنا -->
+  </div>
+
+  <script>
+    const barcodes = [
+      { src: 'safe1.png', type: 'safe' },
+      { src: 'safe2.png', type: 'safe' },
+      { src: 'phishing1.png', type: 'phishing' },
+      { src: 'phishing2.png', type: 'phishing' },
+      { src: 'malware1.png', type: 'malware' },
+      { src: 'malware2.png', type: 'malware' }
+    ];
+
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function renderBarcodes() {
+      const container = document.getElementById('barcodeContainer');
+      container.innerHTML = '';
+      const safeBarcodes = barcodes.filter(b => b.type === 'safe');
+      const otherBarcodes = shuffle(barcodes.filter(b => b.type !== 'safe'));
+      const chosen = [safeBarcodes[Math.floor(Math.random() * safeBarcodes.length)], ...otherBarcodes.slice(0, 2)];
+      shuffle(chosen).forEach(barcode => {
+        const div = document.createElement('div');
+        div.className = 'barcode';
+        const img = document.createElement('img');
+        img.src = 'barcodes/' + barcode.src;
+        img.alt = 'QR Code';
+        img.style.width = '160px';
+        img.style.height = '160px';
+        div.appendChild(img);
+        container.appendChild(div);
+      });
+    }
+
+    renderBarcodes();
+    setInterval(renderBarcodes, 5 * 60 * 1000); // كل 5 دقائق
+  </script>
+</body>
+</html>
